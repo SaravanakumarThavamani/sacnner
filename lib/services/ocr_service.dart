@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class OcrService {
-  final TextRecognizer textRecognizer =
-      TextRecognizer(script: TextRecognitionScript.latin);
+  final TextRecognizer textRecognizer = TextRecognizer(
+    script: TextRecognitionScript.latin,
+  );
 
   Future<String> extractText(File imageFile) async {
     try {
       final inputImage = InputImage.fromFile(imageFile);
 
-      final recognizedText =
-          await textRecognizer.processImage(inputImage);
+      final recognizedText = await textRecognizer.processImage(inputImage);
 
       if (recognizedText.blocks.isEmpty) {
         return '';
@@ -40,18 +40,19 @@ class OcrService {
             continue;
           }
 
-          final elements = line.elements
-              .map(
-                (element) => TextElementData(
-                  text: element.text.trim(),
-                  top: element.boundingBox.top,
-                  bottom: element.boundingBox.bottom,
-                  left: element.boundingBox.left,
-                  right: element.boundingBox.right,
-                ),
-              )
-              .where((element) => element.text.isNotEmpty)
-              .toList();
+          final elements =
+              line.elements
+                  .map(
+                    (element) => TextElementData(
+                      text: element.text.trim(),
+                      top: element.boundingBox.top,
+                      bottom: element.boundingBox.bottom,
+                      left: element.boundingBox.left,
+                      right: element.boundingBox.right,
+                    ),
+                  )
+                  .where((element) => element.text.isNotEmpty)
+                  .toList();
 
           elements.sort((a, b) => a.left.compareTo(b.left));
 
@@ -98,9 +99,7 @@ class OcrService {
     }
   }
 
-  String _buildPositionAwareLine(
-    List<TextElementData> elements,
-  ) {
+  String _buildPositionAwareLine(List<TextElementData> elements) {
     if (elements.length == 1) {
       return elements.first.text;
     }
@@ -108,9 +107,7 @@ class OcrService {
     final gaps = <double>[];
 
     for (var i = 1; i < elements.length; i++) {
-      gaps.add(
-        elements[i].left - elements[i - 1].right,
-      );
+      gaps.add(elements[i].left - elements[i - 1].right);
     }
 
     final positiveGaps = gaps.where((gap) => gap > 0).toList();
@@ -121,13 +118,10 @@ class OcrService {
 
     positiveGaps.sort();
 
-    final medianGap =
-        positiveGaps[positiveGaps.length ~/ 2];
+    final medianGap = positiveGaps[positiveGaps.length ~/ 2];
 
-    final averageHeight = elements.fold<double>(
-          0,
-          (sum, element) => sum + element.height,
-        ) /
+    final averageHeight =
+        elements.fold<double>(0, (sum, element) => sum + element.height) /
         elements.length;
 
     final columnGap = [
@@ -140,8 +134,7 @@ class OcrService {
 
     for (var i = 0; i < elements.length; i++) {
       if (i > 0) {
-        final gap =
-            elements[i].left - elements[i - 1].right;
+        final gap = elements[i].left - elements[i - 1].right;
 
         if (gap >= columnGap) {
           result.write(' | ');
@@ -156,18 +149,13 @@ class OcrService {
     return result.toString().trim();
   }
 
-  void _addLineToRow(
-    List<OcrRow> rows,
-    TextLineData line,
-  ) {
+  void _addLineToRow(List<OcrRow> rows, TextLineData line) {
     OcrRow? matchedRow;
 
     for (final row in rows) {
-      final distance =
-          (line.centerY - row.centerY).abs();
+      final distance = (line.centerY - row.centerY).abs();
 
-      final tolerance =
-          ((line.height + row.averageHeight) / 2) * 0.65;
+      final tolerance = ((line.height + row.averageHeight) / 2) * 0.65;
 
       if (distance <= tolerance) {
         matchedRow = row;
@@ -241,10 +229,7 @@ class OcrRow {
       return 0;
     }
 
-    return lines.fold<double>(
-          0,
-          (sum, line) => sum + line.centerY,
-        ) /
+    return lines.fold<double>(0, (sum, line) => sum + line.centerY) /
         lines.length;
   }
 
@@ -253,10 +238,7 @@ class OcrRow {
       return 10;
     }
 
-    return lines.fold<double>(
-          0,
-          (sum, line) => sum + line.height,
-        ) /
+    return lines.fold<double>(0, (sum, line) => sum + line.height) /
         lines.length;
   }
 }

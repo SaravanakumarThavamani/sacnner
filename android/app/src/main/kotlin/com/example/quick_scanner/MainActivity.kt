@@ -1,4 +1,4 @@
-package com.example.quick_scanner
+package com.scanwoo
 
 import io.flutter.embedding.android.FlutterActivity
 

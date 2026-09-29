@@ -1,9 +1,19 @@
-import '../models/scan_record.dart';
+import '../services/models/scan_record.dart';
 
 String formatShortDate(DateTime date) {
   const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   return '${date.day.toString().padLeft(2, '0')} '
       '${months[date.month - 1]} ${date.year}';

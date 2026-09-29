@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="quick_scanner"
+        android:label="Scanwoo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:windowOptOutEdgeToEdgeEnforcement="true">
@@ -32,7 +32,17 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="scanwoo.com"
+                    android:pathPrefix="/client/reset-password" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -46,6 +56,10 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/pdf" />
+        </intent>
     </queries>
-
+ 
 </manifest>
